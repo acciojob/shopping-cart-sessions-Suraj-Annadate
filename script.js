@@ -1,5 +1,4 @@
-// This is the boilerplate code given for you
-// You can modify this code
+// script.js
 // Product data
 const products = [
   { id: 1, name: "Product 1", price: 10 },
@@ -11,6 +10,35 @@ const products = [
 
 // DOM elements
 const productList = document.getElementById("product-list");
+const cartList = document.getElementById("cart-list");
+const clearCartButton = document.getElementById("clear-cart-btn");
+
+// Initialize the cart from session storage if it exists
+let cart = JSON.parse(sessionStorage.getItem("cart") || "[]");
+
+// Event listener for adding products to the cart
+productList.addEventListener("click", (event) => {
+  if (event.target.classList.contains("add-to-cart-btn")) {
+    const productId = parseInt(event.target.getAttribute("data-id"));
+    addToCart(productId);
+    renderCart();
+  }
+});
+
+// Event listener for removing products from the cart
+cartList.addEventListener("click", (event) => {
+  if (event.target.classList.contains("remove-from-cart-btn")) {
+    const productId = parseInt(event.target.getAttribute("data-id"));
+    removeFromCart(productId);
+    renderCart();
+  }
+});
+
+// Event listener for clearing the cart
+clearCartButton.addEventListener("click", () => {
+  clearCart();
+  renderCart();
+});
 
 // Render product list
 function renderProducts() {
@@ -22,16 +50,32 @@ function renderProducts() {
 }
 
 // Render cart list
-function renderCart() {}
+function renderCart() {
+  cartList.innerHTML = "";
+  cart.forEach((cartItem) => {
+    const product = products.find((p) => p.id === cartItem.productId);
+    const li = document.createElement("li");
+    li.innerHTML = `${product.name} - $${product.price} <button class="remove-from-cart-btn" data-id="${product.id}">Remove</button>`;
+    cartList.appendChild(li);
+  });
+  // Save the updated cart to session storage
+  sessionStorage.setItem("cart", JSON.stringify(cart));
+}
 
 // Add item to cart
-function addToCart(productId) {}
+function addToCart(productId) {
+  cart.push({ productId });
+}
 
 // Remove item from cart
-function removeFromCart(productId) {}
+function removeFromCart(productId) {
+  cart = cart.filter((cartItem) => cartItem.productId !== productId);
+}
 
 // Clear cart
-function clearCart() {}
+function clearCart() {
+  cart = [];
+}
 
 // Initial render
 renderProducts();
