@@ -64,7 +64,7 @@ function renderCart() {
 
 // Add item to cart
 function addToCart(productId) {
-  cart.push({ id: productId });
+  cart.push({ productId });
 }
 
 // Remove item from cart
